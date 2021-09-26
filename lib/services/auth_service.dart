@@ -6,9 +6,10 @@ import 'package:firebase_demo/models/user.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  MyUser _userFromFirebaseUser(User? user) => MyUser(uid: (user!.uid));
+  MyUser? _userFromFirebaseUser(User? user) =>
+      user == null ? null : MyUser(uid: (user.uid));
 
-  Stream<MyUser> get user {
+  Stream<MyUser?> get user {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
 

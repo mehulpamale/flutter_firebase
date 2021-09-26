@@ -21,6 +21,8 @@ class _SignInState extends State<SignIn> {
   var email = "";
   var password = "";
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +35,7 @@ class _SignInState extends State<SignIn> {
               textColor: Colors.white,
               onPressed: () => widget.toggleView!(),
               icon: Icon(Icons.person),
-              label: Text('Sign In'))
+              label: Text('Register'))
         ],
       ),
       body: Container(
@@ -41,16 +43,13 @@ class _SignInState extends State<SignIn> {
           child: Padding(
             padding: const EdgeInsets.all(30.0),
             child: Form(
+              key: _formkey,
               child: Column(
                 children: [
                   SizedBox(height: 20),
                   TextFormField(
-                    decoration: InputDecoration(hintText: 'Enter Name'),
-                    onChanged: (val) {
-                      setState(() {
-                        email = val;
-                      });
-                    },
+                    decoration: InputDecoration(hintText: 'Enter Email'),
+                    onChanged: (val) => setState(() => email = val),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
@@ -66,14 +65,16 @@ class _SignInState extends State<SignIn> {
                   ElevatedButton(
                       onPressed: () async {
                         print('cred:$email, $password');
-                        if (_formkey.currentState!.validate()) {
-                          dynamic result =
-                          await _auth.signIn(email, password);
+                        if (_formkey.currentState != null &&
+                            _formkey.currentState!.validate()) {
+                          dynamic result = await _auth.signIn(email, password);
+                          print(result);
                           if (result == null) {
-                            setState(() => error = 'could not sign in with those credentials'
-                                'or '
-                                'password');
-                          } else{
+                            setState(() => error =
+                                'could not sign in with those credentials'
+                                    'or '
+                                    'password');
+                          } else {
                             // showDialog(context: context, builder: builder)
                             // showDialog(context: context, 'success');
 
@@ -81,16 +82,16 @@ class _SignInState extends State<SignIn> {
                         }
                       },
                       child: Text('Sign In')),
-                  Text('or'),
-                  ElevatedButton(
-                    child: Text('Sign In Anonymously'),
-                    onPressed: () async {
-                      _auth
-                          .signAnon()
-                          .then((value) => print('v:$value'))
-                          .onError((error, stackTrace) => print('$error'));
-                    },
-                  ),
+                  // Text('or'),
+                  // ElevatedButton(
+                  //   child: Text('Sign In Anonymously'),
+                  //   onPressed: () async {
+                  //     _auth
+                  //         .signAnon()
+                  //         .then((value) => print('v:$value'))
+                  //         .onError((error, stackTrace) => print('$error'));
+                  //   },
+                  // ),
                 ],
               ),
             ),
